@@ -14,12 +14,12 @@ jobs:
 
     - name: Create .env file
       run: |
-        echo "DB_HOST=db" > .env
-        echo "DB_PORT=5432" >> .env
-        echo "DB_NAME=appdb" >> .env
-        echo "DB_USER=app" >> .env
-        echo "DB_PASSWORD=change-me" >> .env
-        echo "APP_PORT=8080" >> .env
+        "DB_HOST=db" | Out-File -FilePath .env -Encoding ascii
+        "DB_PORT=5432" | Out-File -FilePath .env -Encoding ascii -Append
+        "DB_NAME=appdb" | Out-File -FilePath .env -Encoding ascii -Append
+        "DB_USER=app" | Out-File -FilePath .env -Encoding ascii -Append
+        "DB_PASSWORD=change-me" | Out-File -FilePath .env -Encoding ascii -Append
+        "APP_PORT=8080" | Out-File -FilePath .env -Encoding ascii -Append
 
     - name: Deploy with Docker Compose
       run: |
