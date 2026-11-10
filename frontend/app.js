@@ -1,0 +1,1 @@
+﻿fetch('/api/items').then(res => res.json()).then(data => { const ul = document.getElementById('items'); ul.innerHTML = ''; data.forEach(item => { const li = document.createElement('li'); li.textContent = `#${item.id} — ${item.name}`; ul.appendChild(li); }); }).catch(err => { document.getElementById('items').textContent = 'Error: ' + err; });

@@ -1,0 +1,44 @@
+﻿name: Full Stack Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy-and-test:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create .env file
+      run: |
+        echo "DB_HOST=db" > .env
+        echo "DB_PORT=5432" >> .env
+        echo "DB_NAME=appdb" >> .env
+        echo "DB_USER=app" >> .env
+        echo "DB_PASSWORD=change-me" >> .env
+        echo "APP_PORT=8080" >> .env
+
+    - name: Deploy with Docker Compose
+      run: |
+        docker compose up -d --build
+        Start-Sleep -Seconds 15
+        docker compose ps
+
+    - name: Run tests
+      run: |
+        $response = Invoke-RestMethod -Uri "http://localhost:8080/api/items"
+        if ($response) {
+            Write-Host "Database connection working!"
+        } else {
+            Write-Host "Failed to connect"
+            exit 1
+        }
+
+    - name: Save artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-artifacts
+        path: .env
