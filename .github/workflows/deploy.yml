@@ -1,17 +1,14 @@
 ﻿name: Full Stack Deployment
-
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
 jobs:
   deploy-and-test:
     runs-on: self-hosted
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
     - name: Create .env file
       run: |
         "DB_HOST=db" | Out-File -FilePath .env -Encoding ascii
@@ -20,13 +17,11 @@ jobs:
         "DB_USER=app" | Out-File -FilePath .env -Encoding ascii -Append
         "DB_PASSWORD=change-me" | Out-File -FilePath .env -Encoding ascii -Append
         "APP_PORT=8080" | Out-File -FilePath .env -Encoding ascii -Append
-
     - name: Deploy with Docker Compose
       run: |
         docker compose up -d --build
         Start-Sleep -Seconds 15
         docker compose ps
-
     - name: Run tests
       run: |
         $response = Invoke-RestMethod -Uri "http://localhost:8080/api/items"
@@ -36,8 +31,7 @@ jobs:
             Write-Host "Failed to connect"
             exit 1
         }
-
-    - name: Save artifacts
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: deployment-artifacts
